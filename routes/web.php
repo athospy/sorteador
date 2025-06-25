@@ -5,17 +5,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
+// react form for registering the product purchase
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'laravelVersion' => Application::VERSION,
@@ -25,19 +16,24 @@ Route::get('/', function () {
 
 
 Route::get('/sorteo', function () {
-    $clientes = \App\Models\Cliente::all();
-    $clienteMap=$clientes->keyBy('id');
-    $ganadoresArray = \App\Models\Ganador::orderBy('id', 'desc')
-    ->get();
-    $ganadores=[];
-    foreach ($ganadoresArray as $ganador) {
-        $cliente=$clienteMap[$ganador->cliente_id];
-        $texto=$cliente->nombre.' - '.$cliente->ciudad.' - '.$cliente->local.' - '.$cliente->nro_factura.' - '.$cliente->producto.' - '.$cliente->cedula.' - '.$ganador->created_at;
-        array_push($ganadores, $texto);
+    $clients = \App\Models\Cliente::all();
+    $clienteMap = $clients->keyBy('id');
+    $winnersArray = \App\Models\Ganador::orderBy('id', 'desc')
+        ->get();
+    $winners = [];
+    // Create a map of client IDs to client objects for quick access
+    // Iterate through the winners and create a display text for each
+    // winner using the client information
+    // and the winner's creation date
+    // Example: "John Doe - New York - Store A - 123 - Product X - 123456789 - 2023-10-01 12:00:00"
+    foreach ($winnersArray as $winnerObject) {
+        $cliente = $clienteMap[$winnerObject->cliente_id];
+        $displayText = $cliente->nombre . ' - ' . $cliente->ciudad . ' - ' . $cliente->local . ' - ' . $cliente->nro_factura . ' - ' . $cliente->producto . ' - ' . $cliente->cedula . ' - ' . $winnerObject->created_at;
+        array_push($winners, $displayText);
     }
     return Inertia::render('Sorteo', [
-        'clientes' => $clientes,
-        'ganadores' => $ganadores,
+        'clientes' => $clients,
+        'ganadores' => $winners,
     ]);
 });
 
@@ -53,4 +49,4 @@ Route::middleware('auth')->group(function () {
 });
 */
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
